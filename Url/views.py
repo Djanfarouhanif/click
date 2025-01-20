@@ -4,9 +4,17 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import redirect
 from .models import Click
-from .serialiers import ClickSerializer
+from .serialiers import ClickSerializer, UserSerializer
 from rest_framework.views import APIView
 from rest_framework import status
+from django.contrib.auth.models import User
+
+class UserViewSet(viewsets.ViewSet):
+    queryset = User.objects.all()
+    class_serializer = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        pass
 
 class ClickViewSet(viewsets.ViewSet):
 
@@ -24,16 +32,17 @@ class ClickViewSet(viewsets.ViewSet):
 
         # Retourner une URL de suivi à partager
         follow_url = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
-        click = Click.objects.create(output=follow_url)
+        click.url_output = follow_url 
+        click.save()
         return Response({'follow_url': follow_url}, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'], url_path='track')
-    def track(self,request,unique_code=None):
+    def track(self,request,pk=None):
 
         print( "*******************************")
         # cette action suit les clics sur l'URL et redirige vers l'URL d'origin.abs
         try:
-            click = Click.objects.get(unique_code=unique_code)
+            click = Click.objects.get(unique_code=pk)
             click.clicks += 1
             click.save()
 

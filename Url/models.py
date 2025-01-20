@@ -1,12 +1,14 @@
 from django.db import models
 import uuid
+from django.contrib.auth.models import User
 
+user = User()
 class Click(models.Model):
-   
-    url = models.URLField(unique=True)
-    clicks = models.IntegerField(default=0)
     unique_code = models.UUIDField(default=uuid.uuid4, editable=False,unique=True)
-    url_output = models.URLField(unique=True)
+    user = models.ForeignKey(user, on_delete=models.CASCADE)
+    url = models.URLField(unique=False)
+    clicks = models.IntegerField(default=0)
+    url_output = models.URLField(unique=False)
 
     def __str__(self):
-        return f"{self.url} - {self.clicks} clicks"
+        return f"{self.user.username} - {self.clicks} clicks"
