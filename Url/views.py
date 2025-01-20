@@ -29,6 +29,7 @@ class ClickViewSet(viewsets.ViewSet):
     @action(detail=True, methods=['get'], url_path='track')
     def track(self,request,unique_code=None):
 
+        print(unique_code, "*******************************")
         # cette action suit les clics sur l'URL et redirige vers l'URL d'origin.abs
         try:
             click = Click.objects.get(unique_code=unique_code)
