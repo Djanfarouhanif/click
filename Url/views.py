@@ -14,9 +14,11 @@ class UserViewSet(viewsets.ViewSet):
     class_serializer = UserSerializer
 
     def create(self, request, *args, **kwargs):
-        pass
+        user = request.get(data)
 
 class ClickViewSet(viewsets.ViewSet):
+    queryset = User.objects.all()
+    class_serializer = UserSerializer
 
     @action(detail=False,methods=['post'], url_path='create')
     def generate_url(self,request):
