@@ -9,28 +9,28 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth.models import User
 
-class UserViewSet(viewsets.ViewSet):
-    queryset = User.objects.all()
-    class_serializer = UserSerializer
 
-    def create(self, request, *args, **kwargs):
-        user = request.get(data)
-
-class ClickViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    class_serializer = UserSerializer
+    serializer_class = UserSerializer
+
+    
+class ClickViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = ClickSerializer
 
     @action(detail=False,methods=['post'], url_path='create')
     def generate_url(self,request):
         # Méthode pour permetre d'enregistrer une  URL et générer une URL de suivi
 
         url = request.data.get('url') # Réccupére l'URL d'origine
-
+        current_user = request.data.get('user') # Réccupérre user
+        user = User.objects.get(email=current_user) 
         if not url:
             return Response({'error': "URL is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Enrégister L'URL dans la base de données avec un code unique
-        click = Click.objects.create(url=url)
+        click = Click.objects.create(user=user,url=url)
 
         # Retourner une URL de suivi à partager
         follow_url = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
