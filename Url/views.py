@@ -16,7 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     
 class ClickViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = Click.objects.all()
     serializer_class = ClickSerializer
 
     @action(detail=False,methods=['post'], url_path='create')

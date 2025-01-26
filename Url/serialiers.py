@@ -11,9 +11,11 @@ class UserSerializer(serializers.ModelSerializer):
 class ClickSerializer(serializers.ModelSerializer):
 
     user = serializers.SlugRelatedField(
-        queryset=User.objects.all(),
-        slug_field= "email" # Permet d'utiliser le champ email
-    )
+        queryset=User.objects.all(),  # Récupère les utilisateurs disponibles
+        slug_field="email"           # Utilise l'email pour identifier l'utilisateur
+        )
+    #user = UserSerializer()
+    
     class Meta:
         model = Click
-        fields = ['unique_code','user','url', 'clicks','url_output']
+        fields = '__all__'
