@@ -62,11 +62,13 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication', # Pour les sesseions web
         'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication', # Pour les tokens
+         # 'rest_framework_simplejwt.authentication.JWTAuthentication',  # Pour JWT
     ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated', # Par défaut, exige une authentification
     ],
 }
 

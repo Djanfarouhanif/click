@@ -17,12 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from Url.views import ClickViewSet, UserViewSet
+from Url.views import ClickViewSet, UserViewSet, UserLoginViewSet
 
 # Création d'un routeur pour le viewSet
 router = DefaultRouter()
 router.register(r'clicks', ClickViewSet, basename='click')
 router.register(r'user', UserViewSet, basename='user')
+router.register(r'login', UserLoginViewSet, basename='login')
 
 
 
