@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Url',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,11 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated', # Par défaut, exige une authentification
     ],
 }
+
+# settings.py
+# SESSION_COOKIE_SAMESITE = 'Lax'  # ou 'None' si vous utilisez HTTPS et CORS
+# SESSION_COOKIE_SECURE = True  # Si vous utilisez HTTPS
+# SESSION_COOKIE_HTTPONLY = True  # Empêche l'accès au cookie via JavaScript
 
 ROOT_URLCONF = 'core.urls'
 

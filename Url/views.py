@@ -12,10 +12,26 @@ from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 
-class UserViewSet(viewsets.ModelViewSet):
+def set_token_cookie(response,token):
+    response.set_cookie('auth_token', token, httponly=True, secure=True)
+
+class UserViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    @action(detail=False,methods=['post'],url_path='signup')
+    def signup(self,request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save() #Crée l'utilisateur
+            response = Response({
+                'message': "Inscritpon réussi",
+                'username': user.username
+            }, status=status.HTTP_201_CREATED)
+
+            # set_token_cookie(response,token.key)
+
+            return response
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 class UserLoginViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
@@ -26,18 +42,18 @@ class UserLoginViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
-            user = authenticated(request, username=username, password=password)
+            user = authenticate(request, username=username, password=password)
 
             if user:
                 # Générer ou récupérer un token pour l'utisateur
                 token, created = Token.objects.get_or_create(user=user)
                 
-                return Response({"message":"connexion réussie.", "token": token.key}, status=status.HTTP_200_OK)
-
+                response = Response({"message":"connexion réussie.", "token": token.key}, status=status.HTTP_200_OK)
+            
             else:
                 return Response({"message": "Nom d'utilisateur ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)
         else:
-            return Response(serializers.errors, status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
    
 
