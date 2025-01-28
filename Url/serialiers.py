@@ -11,15 +11,15 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'password']
 
-        def create(self,validated_data):
+    def create(self,validated_data):
             # Crée un nouvel utilisateur avec les données validées
-            user = User.objects.create_user(
-                username=validated_data['username'],
-                email = validated_data['email'],
-                password=validated_data['password']
+        user = User.objects.create_user(
+        username=validated_data['username'],
+        email = validated_data['email'],
+        password=validated_data['password']
             )
 
-            return user
+        return user
 
 class ClickSerializer(serializers.ModelSerializer):
 

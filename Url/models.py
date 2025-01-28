@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 class Click(models.Model):
     unique_code = models.UUIDField(default=uuid.uuid4, editable=False,unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    link_name = models.CharField(max_length=200)
     url = models.URLField(unique=False)
     clicks = models.IntegerField(default=0)
     url_output = models.URLField(unique=False)

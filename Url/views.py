@@ -13,8 +13,11 @@ from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
 
 
-class UserViewSet(viewsets.ViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    
     @action(detail=False,methods=['post'],url_path='signup')
     def signup(self,request):
         serializer = UserSerializer(data=request.data)
@@ -26,7 +29,7 @@ class UserViewSet(viewsets.ViewSet):
 
             if user_auth:
                 login(request, user_auth)
-                
+
             response = Response({
                 'message': "Inscritpon réussi",
                 'username': user.username
