@@ -67,25 +67,34 @@ class UserLoginViewSet(viewsets.ViewSet):
 
     
 class ClickViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated] # Seuls les utilisateurs authentifier quie peuvent se connecter
-    queryset = Click.objects.all()
+    
     serializer_class = ClickSerializer
 
+    # Fonction pour personnaliser 
+    def get_queryset(self):
+        # Récupére l'utilisateur connecté
+        user = self.request.user
+        if user.is_authenticated:
+            return Click.objects.filter(user=user)
+        
+        return Click.objects.none() # Retourne un queryset vide si l'utisateur n'est pas authentifié
+   
+
+    # Fonction pour géneré un url de track
     @action(detail=False,methods=['post'], url_path='create')
     def generate_url(self,request):
         # Méthode pour permetre d'enregistrer une  URL et générer une URL de suivi
-        use_c = request.user
-        print("**************")
-        print(use_c, "***************")
-        print('**************')
+        current_user = self.request.user
         url = request.data.get('url') # Réccupére l'URL d'origine
-        current_user = request.data.get('user') # Réccupérre user
-        user = User.objects.get(email=current_user) 
+        
+        print("**********************")
+        print(current_user)
+        print('**********************')
         if not url:
             return Response({'error': "URL is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         # Enrégister L'URL dans la base de données avec un code unique
-        click = Click.objects.create(user=user,url=url)
+        click = Click.objects.create(user=current_user,url=url)
 
         # Retourner une URL de suivi à partager
         follow_url = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"

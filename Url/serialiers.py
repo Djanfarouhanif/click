@@ -23,15 +23,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ClickSerializer(serializers.ModelSerializer):
 
-    user = serializers.SlugRelatedField(
-        queryset=User.objects.all(),  # Récupère les utilisateurs disponibles
-        slug_field="email"           # Utilise l'email pour identifier l'utilisateur
-        )
+    # user = serializers.SlugRelatedField(
+    #     queryset=User.objects.all(),  # Récupère les utilisateurs disponibles
+    #     slug_field="email"           # Utilise l'email pour identifier l'utilisateur
+    #     )
     #user = UserSerializer()
+
+    link_name = serializers.CharField(max_length=200, required=True)
     
     class Meta:
         model = Click
-        fields = '__all__'
+        fields = ['link_name', 'url', 'clicks', 'url_output']
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
