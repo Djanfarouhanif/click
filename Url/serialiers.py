@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Click
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
-
+from django.contrib.auth import authenticate, login
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True,validators=[UniqueValidator(queryset=User.objects.all())]) # Vérifier que l'email est uniqe
 
@@ -14,8 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
         def create(self,validated_data):
             # Crée un nouvel utilisateur avec les données validées
             user = User.objects.create_user(
-                username=validate_data['username'],
-                email = validate_data['eamil'],
+                username=validated_data['username'],
+                email = validated_data['email'],
                 password=validated_data['password']
             )
 

@@ -9,11 +9,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated,AllowAny
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
 
-def set_token_cookie(response,token):
-    response.set_cookie('auth_token', token, httponly=True, secure=True)
 
 class UserViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
@@ -22,6 +20,13 @@ class UserViewSet(viewsets.ViewSet):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save() #Crée l'utilisateur
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+            user_auth = authenticate(request,username = username, password=password)
+
+            if user_auth:
+                login(request, user_auth)
+                
             response = Response({
                 'message': "Inscritpon réussi",
                 'username': user.username
@@ -45,17 +50,16 @@ class UserLoginViewSet(viewsets.ViewSet):
             user = authenticate(request, username=username, password=password)
 
             if user:
+                login(request,user)
                 # Générer ou récupérer un token pour l'utisateur
                 token, created = Token.objects.get_or_create(user=user)
                 
-                response = Response({"message":"connexion réussie.", "token": token.key}, status=status.HTTP_200_OK)
-            
+                response =  Response({"message":"connexion réussie.", "token": token.key}, status=status.HTTP_200_OK)
+                return response
             else:
                 return Response({"message": "Nom d'utilisateur ou mot de passe incorrect"}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-
-   
 
 
     

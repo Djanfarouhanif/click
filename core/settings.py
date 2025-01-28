@@ -74,6 +74,7 @@ REST_FRAMEWORK = {
 }
 
 # settings.py
+SESSION_COOKIE_NAME = "SID"
 # SESSION_COOKIE_SAMESITE = 'Lax'  # ou 'None' si vous utilisez HTTPS et CORS
 # SESSION_COOKIE_SECURE = True  # Si vous utilisez HTTPS
 # SESSION_COOKIE_HTTPONLY = True  # Empêche l'accès au cookie via JavaScript
