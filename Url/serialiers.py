@@ -3,6 +3,10 @@ from .models import Click
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth import authenticate, login
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework import status
+
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True,validators=[UniqueValidator(queryset=User.objects.all())]) # Vérifier que l'email est uniqe
 
@@ -17,10 +21,8 @@ class UserSerializer(serializers.ModelSerializer):
         username=validated_data['username'],
         email = validated_data['email'],
         password=validated_data['password']
-            )
-
+            )      
         return user
-
 class ClickSerializer(serializers.ModelSerializer):
 
     # user = serializers.SlugRelatedField(

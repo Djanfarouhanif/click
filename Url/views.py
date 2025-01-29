@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
 
 
+# Fonction pour enregistrer un nouveau user
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     queryset = User.objects.all()
@@ -30,17 +31,23 @@ class UserViewSet(viewsets.ModelViewSet):
             if user_auth:
                 login(request, user_auth)
 
-            response = Response({
-                'message': "Inscritpon réussi",
-                'username': user.username
-            }, status=status.HTTP_201_CREATED)
+                token, create = Token.objects.get_or_create(user=user_auth)
+
+                response = Response({
+                    'message': "Inscritpon réussi",
+                    'username': user.username,
+                    'token': token.key
+                }, status=status.HTTP_201_CREATED)
 
             # set_token_cookie(response,token.key)
 
-            return response
+                return response
+            else:
+                return Response({"message": "Nom d'utilisateur ou mot de passe incorrect"},status=status.HTTP_401_UNAUTHORIZED)
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
+# Fonction pour loger l'utisateur qui a déja un compte
 class UserLoginViewSet(viewsets.ViewSet):
     permission_classes = [AllowAny]
 
