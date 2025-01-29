@@ -73,19 +73,29 @@ class UserLoginViewSet(viewsets.ViewSet):
 
 
     
-class ClickViewSet(viewsets.ModelViewSet):
+class ClickViewSet(viewsets.ViewSet):
     
     serializer_class = ClickSerializer
 
-    # Fonction pour personnaliser 
-    def get_queryset(self):
-        # Récupére l'utilisateur connecté
-        user = self.request.user
-        if user.is_authenticated:
-            return Click.objects.filter(user=user)
+    # # Fonction pour personnaliser 
+    # def get_queryset(self):
+    #     # Récupére l'utilisateur connecté
+    #     user = self.request.user
+    #     if user.is_authenticated:
+    #         return Click.objects.filter(user=user)
         
-        return Click.objects.none() # Retourne un queryset vide si l'utisateur n'est pas authentifié
+    #     return Click.objects.none() # Retourne un queryset vide si l'utisateur n'est pas authentifié
    
+    @action(detail=False,methods=['get'],url_path='get_url')
+    def get_url(self, request):
+        current_user = self.request.user
+        
+        click = Click.objects.filter(user=current_user)
+
+        serializer = ClickSerializer(click,many=True)
+
+        return Response({"data": serializer.data}, status=status.HTTP_200_OK)
+
 
     # Fonction pour géneré un url de track
     @action(detail=False,methods=['post'], url_path='create')
@@ -93,21 +103,34 @@ class ClickViewSet(viewsets.ModelViewSet):
         # Méthode pour permetre d'enregistrer une  URL et générer une URL de suivi
         current_user = self.request.user
         url = request.data.get('url') # Réccupére l'URL d'origine
+        serializer = ClickSerializer(data=request.data)
+        if serializer.is_valid():
+            link_name = serializer.validated_data['link_name']
+            url = serializer.validated_data['url']
+
+            # Enrégistreer L'URL dans la base de donnée avec un code unique
+            click = Click.objects.create(user=current_user, link_name=link_name , url=url)
+            
+            # Retourner L'URL de suivi à partager
+            url_output = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
+            # Enrégistre l'url de sortie
+            click.url_output = url_output
+            click.save()
+
+            return Response({"url_output": url_output}, status=status.HTTP_201_CREATED)
         
-        print("**********************")
-        print(current_user)
-        print('**********************')
-        if not url:
+     
+        else:
             return Response({'error': "URL is required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Enrégister L'URL dans la base de données avec un code unique
-        click = Click.objects.create(user=current_user,url=url)
+        # # Enrégister L'URL dans la base de données avec un code unique
+        # click = Click.objects.create(user=current_user,url=url)
 
         # Retourner une URL de suivi à partager
-        follow_url = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
-        click.url_output = follow_url 
-        click.save()
-        return Response({'follow_url': follow_url}, status=status.HTTP_201_CREATED)
+        # follow_url = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
+        # click.url_output = follow_url 
+        # click.save()
+        # return Response({'follow_url': follow_url}, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['get'], url_path='track')
     def track(self,request,pk=None):
