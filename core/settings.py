@@ -58,6 +58,11 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200'
 ]
 
+# Spécifier les headers autorisée 
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization"
+]
 # Désactiver la protection CSRF pour les vues REST
 #CSRF_TRUSTED_ORIGINS = ['http://localhost:8000']
 

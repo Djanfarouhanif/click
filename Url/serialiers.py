@@ -34,7 +34,7 @@ class ClickSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Click
-        fields = ['link_name', 'url', 'clicks', 'url_output']
+        fields = ['id','link_name', 'url', 'clicks', 'url_output']
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
