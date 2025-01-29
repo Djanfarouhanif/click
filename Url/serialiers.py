@@ -9,7 +9,6 @@ from rest_framework import status
 
 class UserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True,validators=[UniqueValidator(queryset=User.objects.all())]) # Vérifier que l'email est uniqe
-
     password = serializers.CharField(write_only=True, required=True, min_length=8)
     class Meta:
         model = User

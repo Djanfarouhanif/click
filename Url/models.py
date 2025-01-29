@@ -9,7 +9,7 @@ class Click(models.Model):
     link_name = models.CharField(max_length=200)
     url = models.URLField(unique=False)
     clicks = models.IntegerField(default=0)
-    url_output = models.URLField(unique=False)
+    url_output = models.URLField(unique=False,blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.clicks} clicks"
