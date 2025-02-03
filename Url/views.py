@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.models import Token
+from .url import shorten_url
 
 
 # Fonction pour enregistrer un nouveau user
@@ -113,8 +114,12 @@ class ClickViewSet(viewsets.ViewSet):
             
             # Retourner L'URL de suivi à partager
             url_output = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
+           
+            # Appel de la fonction pour racourcire l'url
+            short_url = shorten_url(url_output)
             # Enrégistre l'url de sortie
-            click.url_output = url_output
+       
+            click.url_output = short_url
             click.save()
 
             return Response({"url_output": url_output}, status=status.HTTP_201_CREATED)
