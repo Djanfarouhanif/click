@@ -11,7 +11,3 @@ def shorten_url(url):
         return "Erreur lors du raccourcessement du lien."
 
 
-
-long_url = "https://www.linkedin.com/in/hanif-djanfarou/"
-short_url = shorten_url(long_url)
-print(f" url raccourci : {short_url}")

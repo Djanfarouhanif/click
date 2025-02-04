@@ -122,7 +122,7 @@ class ClickViewSet(viewsets.ViewSet):
             click.url_output = short_url
             click.save()
 
-            return Response({"url_output": url_output}, status=status.HTTP_201_CREATED)
+            return Response({"data": ClickSerializer(click).data}, status=status.HTTP_201_CREATED)
         
      
         else:
