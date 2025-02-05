@@ -114,15 +114,22 @@ class ClickViewSet(viewsets.ViewSet):
             
             # Retourner L'URL de suivi à partager
             url_output = f"http://127.0.0.1:8000/clicks/{click.unique_code}/track/"
-           
-            # Appel de la fonction pour racourcire l'url
-            short_url = shorten_url(url_output)
-            # Enrégistre l'url de sortie
-       
-            click.url_output = short_url
-            click.save()
 
-            return Response({"data": ClickSerializer(click).data}, status=status.HTTP_201_CREATED)
+            try:
+           
+                # Appel de la fonction pour racourcire l'url
+                short_url = shorten_url(url_output)
+
+                # Enrégistre l'url de sortie
+        
+                click.url_output = short_url
+                click.save()
+                return Response({"data": ClickSerializer(click).data}, status=status.HTTP_201_CREATED)
+            except:
+                
+                click.url_output = url_output
+                click.save()
+                return Response({"data": ClickSerializer(click).data}, status=status.HTTP_201_CREATED)
         
      
         else:
@@ -140,7 +147,6 @@ class ClickViewSet(viewsets.ViewSet):
     @action(detail=True, methods=['get'], url_path='track')
     def track(self,request,pk=None):
 
-        print( "*******************************")
         # cette action suit les clics sur l'URL et redirige vers l'URL d'origin.abs
         try:
             click = Click.objects.get(unique_code=pk)
@@ -151,6 +157,21 @@ class ClickViewSet(viewsets.ViewSet):
             return redirect(click.url)
         except Click.DoesNotExist:
             return Response({"error": "URL not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['get'], url_path='delete')
+    def delete(self,request,pk=None):
+
+        # Fonction pour suprimer les lien
+        try: 
+            link = Click.objects.get(unique_code=pk)
+            link.delete()
+            
+            return Response({"success": "ok"}, status=status.HTTP_200_OK)
+        except:
+            return Response({'error': "URL not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        
+
 
 
   
