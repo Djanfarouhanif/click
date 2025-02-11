@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bfd(n#dzaf)7c5mg4fvo&0o-et4!5n1(v$g$h!6c&dou=r=l!t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = False 
 
 ALLOWED_HOSTS = ['*']
 
@@ -74,9 +74,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication', # Pour les tokens
          #'rest_framework_simplejwt.authentication.JWTAuthentication',  # Pour JWT
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated', # Par défaut, exige une authentification
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated', # Par défaut, exige une authentification
+    # ],
 }
 
 # settings.py
