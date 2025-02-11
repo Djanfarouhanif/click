@@ -113,7 +113,7 @@ class ClickViewSet(viewsets.ViewSet):
             click = Click.objects.create(user=current_user, link_name=link_name , url=url)
             
             # Retourner L'URL de suivi à partager
-            url_output = f"https://djanfarou.pythonanywhere.com/{click.unique_code}/track/"
+            url_output = f"https://djanfarou.pythonanywhere.com/clicks/{click.unique_code}/track/"
 
             try:
            
